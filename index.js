@@ -40,6 +40,20 @@ async function run() {
             res.send(notes);
         });
 
+        app.put('/notes/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedNotes = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+
+            const updatedDoc = {
+                $set: {
+                    updatedNotes
+                }
+            };
+            const result = await noteCollection.updateOne(filter, updatedDoc, options);
+            res.send(result);
+        })
 
         app.delete('/notes/:id', async (req, res) => {
             const id = req.params.id;
