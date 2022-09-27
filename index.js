@@ -23,9 +23,25 @@ async function run() {
         noteCollection = client.db('update_job_task').collection('notes');
 
         app.get('/notes', async (req, res) => {
-            const userNote = await noteCollection.find().toArray();
-            res.send(userNote);
+            const page = parseInt(req.query.page);
+            const size = parseInt(req.query.size);
+            const query = {};
+            const cursor = noteCollection.find(query);
+            let notes;
+            if (page || size) {
+                notes = await cursor.skip(page * size).limit(size).toArray();
+            }
+            else {
+                notes = await cursor.toArray();
+            }
+
+            res.send(notes);
         });
+
+        app.get('/noteCount', async (req, res) => {
+            const count = await noteCollection.estimatedDocumentCount();
+            res.send({ count });
+        })
 
         app.post('/notes', async (req, res) => {
             const newNotes = req.body;
