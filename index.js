@@ -42,13 +42,13 @@ async function run() {
 
         app.put('/notes/:id', async (req, res) => {
             const id = req.params.id;
-            const updatedNotes = req.body;
+            const data = req.body;
             const filter = { _id: ObjectId(id) };
             const options = { upsert: true };
 
             const updatedDoc = {
                 $set: {
-                    updatedNotes
+                    noteDes: data.noteDes
                 }
             };
             const result = await noteCollection.updateOne(filter, updatedDoc, options);
